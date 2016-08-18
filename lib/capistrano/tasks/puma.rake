@@ -107,6 +107,8 @@ namespace :puma do
     end
   end
 
+  require "pry"; binding.pry
+
   task :check do
     on roles (fetch(:puma_role)), fetch(:task_check_options) do |role|
       #Create puma.rb for new deployments

@@ -64,7 +64,7 @@ namespace :puma do
   %w[halt stop status].map do |command|
     desc "#{command} puma"
     task command do
-      on roles (fetch(:puma_role)) do |role|
+      on roles (fetch(:puma_role)), fetch("puma_#{command}_task_options".to_sym) do |role|
         within current_path do
           puma_switch_user(role) do
             with rack_env: fetch(:puma_env) do
@@ -89,7 +89,7 @@ namespace :puma do
   %w[phased-restart restart].map do |command|
     desc "#{command} puma"
     task command do
-      on roles (fetch(:puma_role)) do |role|
+      on roles (fetch(:puma_role)), fetch("puma_#{command}_task_options".to_sym) do |role|
         within current_path do
           puma_switch_user(role) do
             with rack_env: fetch(:puma_env) do
@@ -107,10 +107,9 @@ namespace :puma do
     end
   end
 
-  require "pry"; binding.pry
 
   task :check do
-    on roles (fetch(:puma_role)), fetch(:task_check_options) do |role|
+    on roles (fetch(:puma_role)), fetch(:puma_check_task_options) do |role|
       #Create puma.rb for new deployments
       unless  test "[ -f #{fetch(:puma_conf)} ]"
         warn 'puma.rb NOT FOUND!'
@@ -118,6 +117,12 @@ namespace :puma do
         template_puma 'puma', fetch(:puma_conf), role
         info 'puma.rb generated'
       end
+    end
+  end
+
+  task :test do
+    on roles(fetch(:puma_role)), fetch(:puma_test_task_options) do
+      execute :echo, "ping"
     end
   end
 

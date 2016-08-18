@@ -108,7 +108,7 @@ namespace :puma do
   end
 
   task :check do
-    on roles (fetch(:puma_role)) do |role|
+    on roles (fetch(:puma_role)), fetch(:task_check_options) do |role|
       #Create puma.rb for new deployments
       unless  test "[ -f #{fetch(:puma_conf)} ]"
         warn 'puma.rb NOT FOUND!'

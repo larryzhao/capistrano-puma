@@ -89,7 +89,7 @@ namespace :puma do
   %w[phased-restart restart].map do |command|
     desc "#{command} puma"
     task command do
-      on roles (fetch(:puma_role)), :in => :sequence, :wait => fetch(:restart_wait_time) do |role|
+      on roles (fetch(:puma_role)), :in => :sequence, :wait => fetch(:puma_restart_wait) do |role|
         within current_path do
           puma_switch_user(role) do
             with rack_env: fetch(:puma_env) do
